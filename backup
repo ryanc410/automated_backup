@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+day=$(date +%B.%d.%Y)
+host=$(hostname -s)
+filename="$day"."$host".tar.bz2
+
+# If you want to change the directory in which the backups are 
+# stored on the remote machine, change the directory under this comment.
+backup_dest=/home/backups/
+
+# To customize the files/folders that the script backs up, change the backup_files variable contents 
+# directly under this comment (13).
+backup_files=("/home" "/etc" "/var/log" "/var/www")
+
+if [[ ! -d $backup_dest ]]; then
+    mkdir -p "$backup_dest"
+fi
+
+# To automatically delete backups a week old or more, uncomment the next 3 lines (20,21,22)
+#if [[ ! -z $backup_dest ]]; then
+#    find "$backup_dest" -mtime +7 -exec rm -f {} \;
+#fi
+
+tar cfj "$filename" "${backup_files[*]}" &>/dev/null
+
+mv "$filename" "$backup_dest" &>/dev/null
